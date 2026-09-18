@@ -57,17 +57,6 @@ npm run ios
 npm run web
 ```
 
-## Verificação de qualidade
-
-Antes de enviar alterações, execute:
-
-```bash
-npm run check
-npx expo-doctor
-```
-
-O GitHub Actions executa TypeScript e lint automaticamente em pushes e pull requests.
-
 ## Build Android
 
 O perfil `preview` do `eas.json` gera um APK instalável:
