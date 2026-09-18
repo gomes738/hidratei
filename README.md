@@ -1,56 +1,100 @@
-# Welcome to your Expo app 👋
+# Hidratei
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo pessoal para registrar o consumo de água, acompanhar a meta diária e receber lembretes locais. Os dados ficam somente no aparelho e o aplicativo funciona sem internet.
 
-## Get started
+## Tecnologias
 
-1. Install dependencies
+- React Native com TypeScript
+- Expo SDK 57 e Expo Router
+- AsyncStorage para persistência local
+- Expo Notifications para lembretes locais
 
-   ```bash
-   npm install
-   ```
+## Funcionalidades
 
-2. Start the app
+- Meta diária configurável (2.000 ml por padrão)
+- Registro rápido de 200 ml, 300 ml, 500 ml ou outra quantidade
+- Progresso diário, valor restante e mensagem motivacional
+- Exclusão de registros incorretos
+- Histórico por dia com a meta vigente e percentual atingido
+- Lembretes configuráveis entre dois horários, a cada 30, 60 ou 120 minutos
+- Persistência local de registros e configurações
+- Configuração inicial em seis etapas, exibida somente até a primeira conclusão
+- Perfil, peso e rotina salvos exclusivamente no aparelho
+- Meta inicial estimada para bem-estar, sempre editável e sem caráter médico
 
-   ```bash
-   npx expo start
-   ```
+## Organização MVVM Simplificada
 
-In the output, you'll find options to open the app in a
+O projeto segue o padrão do capítulo 8 de *Tutoriais de PDM*:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+src/
+├── app/          # rotas finas e configuração da pilha
+├── model/        # entidades, regras, DataSource e Service
+├── viewmodel/    # Custom Hooks no formato [state, actions]
+└── view/         # telas e componentes visuais
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **Model:** tipos e regras de água/configurações, acesso ao AsyncStorage em `WaterDataSource` e notificações em `NotificationService`.
+- **ViewModel:** carrega e prepara dados, valida ações, trata erros e controla toda a navegação.
+- **View:** renderiza o estado, dispara ações e mantém somente o texto temporário dos campos.
 
-### Other setup steps
+O primeiro acesso abre `onboarding`, onde o usuário escolhe o perfil, informa peso e horários e revisa o plano. `ProfileDataSource` salva `UserProfile` no AsyncStorage, e `useOnboardingViewModel` controla todas as etapas, validações, permissões e navegação. A configuração pode ser refeita pela tela de configurações.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Instalação e execução
 
-## Learn more
+Requisitos: Node.js, npm, Expo Go ou um emulador/dispositivo com uma development build.
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Depois, leia o QR Code no celular ou pressione `a` para Android, `i` para iOS ou `w` para web. Para iniciar diretamente:
 
-## Join the community
+```bash
+npm run android
+npm run ios
+npm run web
+```
 
-Join our community of developers creating universal apps.
+## Verificação de qualidade
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Antes de enviar alterações, execute:
+
+```bash
+npm run check
+npx expo-doctor
+```
+
+O GitHub Actions executa TypeScript e lint automaticamente em pushes e pull requests.
+
+## Build Android
+
+O perfil `preview` do `eas.json` gera um APK instalável:
+
+```bash
+npx eas-cli build -p android --profile preview
+```
+
+## Como testar as notificações
+
+1. Use uma development build em um aparelho físico. No Android com SDK 57, o aplicativo abre no Expo Go, mas os lembretes ficam indisponíveis para evitar a incompatibilidade de `expo-notifications`.
+2. Abra **Configurações**, ative **Lembretes** e escolha início, fim e intervalo.
+3. Toque em **Salvar configurações** e permita notificações quando o sistema solicitar.
+4. Para um teste rápido, use um período que inclua um horário próximo. Ao salvar novamente, os lembretes anteriores são cancelados e recriados.
+5. Se a permissão for negada, habilite-a nas configurações do sistema operacional e salve novamente no aplicativo.
+
+Para gerar e executar uma compilação Android com suporte aos lembretes:
+
+```bash
+npx expo run:android
+```
+
+No Android, o aplicativo cria o canal **Lembretes de hidratação**. Desativar os lembretes cancela todos os agendamentos do aplicativo.
+
+## Observações
+
+- Não há login, servidor, Firebase ou sincronização em nuvem.
+- A meta é escolhida pelo usuário; o aplicativo não fornece recomendação médica.
+- Alterações de fuso horário ou restrições de bateria do sistema podem afetar o horário exato de entrega.
+- Se o Expo Go informar que o projeto exige uma versão mais nova, atualize o Expo Go pela Play Store e reinicie o Metro com `npx expo start --clear`.

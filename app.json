@@ -1,42 +1,51 @@
 {
   "expo": {
-    "name": "app-hidratei",
-    "slug": "app-hidratei",
+    "name": "Hidratei",
+    "slug": "hidratei",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "apphidratei",
+    "icon": "./assets/images/icone-hidratei.png",
+    "scheme": "hidratei",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/icone-hidratei.png",
+      "bundleIdentifier": "com.carlos.hidratei"
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.carlos.hidratei",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/icone-hidratei.png"
       },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icone-hidratei.png"
     },
     "plugins": [
       "expo-router",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash-hidratei-v2.png",
+          "imageWidth": 220,
+          "resizeMode": "contain"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3173d028-f48f-4c36-a806-cc3529ee55b2"
+      }
     }
   }
 }
