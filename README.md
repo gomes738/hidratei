@@ -1,55 +1,83 @@
 # Hidratei
 
-Aplicativo pessoal para registrar o consumo de água, acompanhar a meta diária e receber lembretes locais. Os dados ficam somente no aparelho e o aplicativo funciona sem internet.
+![Identidade visual do Hidratei](assets/images/splash-hidratei-v2.png)
 
-## Tecnologias
+O **Hidratei** é um aplicativo móvel que ajuda o usuário a acompanhar o consumo diário de água e manter uma rotina de hidratação. O app calcula uma meta inicial com base nas informações fornecidas durante a configuração, registra cada consumo e apresenta a evolução ao longo do dia.
 
-- React Native com TypeScript
-- Expo SDK 57 e Expo Router
-- AsyncStorage para persistência local
-- Expo Notifications para lembretes locais
+Os dados são armazenados localmente no aparelho. Não é necessário criar conta, fazer login ou manter conexão com a internet para usar as funções principais.
 
 ## Funcionalidades
 
-- Meta diária configurável (2.000 ml por padrão)
-- Registro rápido de 200 ml, 300 ml, 500 ml ou outra quantidade
-- Progresso diário, valor restante e mensagem motivacional
-- Exclusão de registros incorretos
-- Histórico por dia com a meta vigente e percentual atingido
-- Lembretes configuráveis entre dois horários, a cada 30, 60 ou 120 minutos
-- Persistência local de registros e configurações
-- Configuração inicial em seis etapas, exibida somente até a primeira conclusão
-- Perfil, peso e rotina salvos exclusivamente no aparelho
-- Meta inicial estimada para bem-estar, sempre editável e sem caráter médico
+- Configuração inicial com sexo, peso e horários de acordar e dormir;
+- Cálculo de uma meta diária inicial de hidratação;
+- Registro rápido de 200 ml, 300 ml, 500 ml ou quantidade personalizada;
+- Visualização do total consumido, percentual alcançado e quantidade restante;
+- Exclusão de registros adicionados por engano;
+- Histórico de consumo organizado por dia;
+- Lembretes locais em horários configuráveis;
+- Alteração da meta, intervalo e período dos lembretes;
+- Persistência local de registros e preferências;
+- Possibilidade de refazer a configuração inicial.
 
-## Organização MVVM Simplificada
+> O Hidratei é uma ferramenta de organização pessoal e não substitui orientação médica ou nutricional.
 
-O projeto segue o padrão do capítulo 8 de *Tutoriais de PDM*:
+## Tecnologias
+
+- React Native;
+- TypeScript;
+- Expo SDK 57;
+- Expo Router;
+- AsyncStorage;
+- Expo Notifications.
+
+## Arquitetura
+
+O projeto utiliza o padrão **MVVM Simplificado**:
 
 ```text
 src/
-├── app/          # rotas finas e configuração da pilha
-├── model/        # entidades, regras, DataSource e Service
-├── viewmodel/    # Custom Hooks no formato [state, actions]
-└── view/         # telas e componentes visuais
+├── app/          # rotas e configuração da navegação
+├── view/         # telas e componentes visuais
+├── viewmodel/    # estados, ações, validações e navegação
+└── model/        # entidades, regras, DataSources e Services
 ```
 
-- **Model:** tipos e regras de água/configurações, acesso ao AsyncStorage em `WaterDataSource` e notificações em `NotificationService`.
-- **ViewModel:** carrega e prepara dados, valida ações, trata erros e controla toda a navegação.
-- **View:** renderiza o estado, dispara ações e mantém somente o texto temporário dos campos.
+As ViewModels são implementadas como Custom Hooks e retornam o estado e as ações de cada tela:
 
-O primeiro acesso abre `onboarding`, onde o usuário escolhe o perfil, informa peso e horários e revisa o plano. `ProfileDataSource` salva `UserProfile` no AsyncStorage, e `useOnboardingViewModel` controla todas as etapas, validações, permissões e navegação. A configuração pode ser refeita pela tela de configurações.
+```ts
+const [state, actions] = useNomeDaViewModel();
+```
 
-## Instalação e execução
+## Como executar
 
-Requisitos: Node.js, npm, Expo Go ou um emulador/dispositivo com uma development build.
+### Pré-requisitos
+
+- [Node.js](https://nodejs.org/) 22 ou superior;
+- npm;
+- Expo Go, emulador Android/iOS ou aparelho conectado.
+
+### Instalação
+
+Clone o repositório e acesse a pasta do projeto:
+
+```bash
+git clone https://github.com/gomes738/hidratei.git
+cd hidratei
+```
+
+Instale as dependências:
 
 ```bash
 npm install
-npx expo start
 ```
 
-Depois, leia o QR Code no celular ou pressione `a` para Android, `i` para iOS ou `w` para web. Para iniciar diretamente:
+Inicie o servidor de desenvolvimento:
+
+```bash
+npm start
+```
+
+Com o servidor aberto, escaneie o QR Code pelo Expo Go ou utilize uma das opções:
 
 ```bash
 npm run android
@@ -57,33 +85,26 @@ npm run ios
 npm run web
 ```
 
-## Build Android
+Também é possível pressionar `a`, `i` ou `w` no terminal do Expo para abrir a plataforma desejada.
 
-O perfil `preview` do `eas.json` gera um APK instalável:
+## Gerar APK para Android
+
+O perfil `preview` do EAS está configurado para gerar um APK instalável:
 
 ```bash
+npx eas-cli login
 npx eas-cli build -p android --profile preview
 ```
 
-## Como testar as notificações
+Ao concluir, o EAS exibirá um endereço para baixar e instalar o APK no Android.
 
-1. Use uma development build em um aparelho físico. No Android com SDK 57, o aplicativo abre no Expo Go, mas os lembretes ficam indisponíveis para evitar a incompatibilidade de `expo-notifications`.
-2. Abra **Configurações**, ative **Lembretes** e escolha início, fim e intervalo.
-3. Toque em **Salvar configurações** e permita notificações quando o sistema solicitar.
-4. Para um teste rápido, use um período que inclua um horário próximo. Ao salvar novamente, os lembretes anteriores são cancelados e recriados.
-5. Se a permissão for negada, habilite-a nas configurações do sistema operacional e salve novamente no aplicativo.
+## Armazenamento e privacidade
 
-Para gerar e executar uma compilação Android com suporte aos lembretes:
+- Os registros e configurações ficam armazenados no próprio aparelho;
+- O aplicativo não possui servidor ou banco de dados remoto;
+- Não há cadastro de usuário ou sincronização em nuvem;
+- A permissão de notificações é solicitada somente para os lembretes de hidratação.
 
-```bash
-npx expo run:android
-```
+## Licença
 
-No Android, o aplicativo cria o canal **Lembretes de hidratação**. Desativar os lembretes cancela todos os agendamentos do aplicativo.
-
-## Observações
-
-- Não há login, servidor, Firebase ou sincronização em nuvem.
-- A meta é escolhida pelo usuário; o aplicativo não fornece recomendação médica.
-- Alterações de fuso horário ou restrições de bateria do sistema podem afetar o horário exato de entrega.
-- Se o Expo Go informar que o projeto exige uma versão mais nova, atualize o Expo Go pela Play Store e reinicie o Metro com `npx expo start --clear`.
+Este projeto está disponível sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE).
