@@ -87,16 +87,6 @@ npm run web
 
 Também é possível pressionar `a`, `i` ou `w` no terminal do Expo para abrir a plataforma desejada.
 
-## Gerar APK para Android
-
-O perfil `preview` do EAS está configurado para gerar um APK instalável:
-
-```bash
-npx eas-cli login
-npx eas-cli build -p android --profile preview
-```
-
-Ao concluir, o EAS exibirá um endereço para baixar e instalar o APK no Android.
 
 ## Armazenamento e privacidade
 
